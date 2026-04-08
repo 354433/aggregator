@@ -5,129 +5,17 @@
         "exclude": "付费|机场|收费|过期|无效",
         "threshold": 5,
         "singlelink": true,
-        "persist": {
-            "subs": "crawledsubs",
-            "proxies": "crawledproxies"
-        },
-        "config": {
-            "rename": "",
-            "include": "",
-            "exclude": "无效|过期|付费|流量用尽"
-        },
-        "telegram": {
-            "enable": false,
-            "pages": 5,
-            "exclude": "",
-            "users": {
-                "channel": {
-                    "include": "",
-                    "exclude": "",
-                    "config": {
-                        "rename": ""
-                    },
-                    "push_to": []
-                }
-            }
-        },
-        "google": {
-            "enable": false,
-            "exclude": "",
-            "limits": 100,
-            "notinurl": [],
-            "push_to": []
-        },
-        "yandex": {
-            "enable": false,
-            "exclude": "",
-            "within": 3,
-            "pages": 5,
-            "notinurl": [],
-            "push_to": []
-        },
         "github": {
             "enable": true,
-            "pages": 1,
-            "push_to": [],
-            "exclude": "付费|收费|机场|私人",
-            "spams": []
+            "pages": 2,
+            "exclude": "付费|收费|机场|私人"
         },
-        "twitter": {
-            "enable": false,
-            "users": {
-                "username": {
-                    "enable": false,
-                    "num": 30,
-                    "include": "",
-                    "exclude": "",
-                    "config": {
-                        "rename": ""
-                    },
-                    "push_to": []
-                }
-            }
-        },
-        "repositories": [
-            {
-                "enable": false,
-                "username": "",
-                "repo_name": "",
-                "commits": 3,
-                "exclude": "",
-                "push_to": []
-            }
-        ],
-        "pages": [
-            {
-                "enable": false,
-                "url": "",
-                "include": "",
-                "exclude": "",
-                "multiple": true,
-                "placeholder": "",
-                "start": 1,
-                "end": 10,
-                "config": {
-                    "rename": ""
-                },
-                "push_to": []
-            }
-        ],
-        "scripts": [
-            {
-                "enable": false,
-                "script": "file#function",
-                "params": {
-                    "persist": {
-                        "fileid": ""
-                    },
-                    "any": "xxx",
-                    "config": {
-                        "enable": true,
-                        "liveness": true,
-                        "exclude": "",
-                        "rename": "",
-                        "push_to": []
-                    }
-                }
-            }
-        ]
+        "telegram": {"enable": false},
+        "twitter": {"enable": false},
+        "pages": [{"enable": false}],
+        "repositories": [{"enable": false}]
     },
-    "filter": {
-        "enable": true,
-        "speed": 5000,
-        "max_fails": 3,
-        "exclude": "traffic|expire|剩余|过期|付费|无效"
-    },
-    "rename": {
-        "enable": true,
-        "emoji": true,
-        "template": "{country} {emoji} {name}"
-    },
-    "liveness": {
-        "enable": true,
-        "concurrency": 10,
-        "timeout": 5000,
-        "url": "http://www.gstatic.com/generate_204",
-        "interval": 3600
-    }
+    "filter": {"enable": true, "speed": 5000},
+    "rename": {"enable": true},
+    "liveness": {"enable": true}
 }
