@@ -1,58 +1,58 @@
 name: Process
 on:
+  workflow_dispatch:
   schedule:
     - cron: "05 03 * * *"
     - cron: "05 11 * * *"
-  workflow_dispatch:
 
 env:
   TZ: Asia/Shanghai
-  SUBSCRIBE_CONF: ${{ secrets.SUBSCRIBE_CONF }}
-  PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
-  REACHABLE: ${{ vars.REACHABLE }}
-  SKIP_ALIVE_CHECK: ${{ vars.SKIP_ALIVE_CHECK }}
-  SKIP_REMARK: ${{ vars.SKIP_REMARK }}
-  WORKFLOW_MODE: ${{ vars.WORKFLOW_MODE }}
-  ENABLE_SPECIAL_PROTOCOLS: ${{ vars.ENABLE_SPECIAL_PROTOCOLS }}
+  # 强制使用本地配置，禁用所有SECRET，避免加载失败秒退
+  SUBSCRIBE_CONF: ""
+  PUSH_TOKEN: ""
+  REACHABLE: "false"
+  SKIP_ALIVE_CHECK: "false"
+  SKIP_REMARK: "false"
+  WORKFLOW_MODE: "local"
+  ENABLE_SPECIAL_PROTOCOLS: "true"
 
 jobs:
   process:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: main
+      - name: Checkout code
+        uses: actions/checkout@v5
 
-      - name: Prepare
-        uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.x"
-          architecture: "x64"
+          python-version: "3.11"
           cache: "pip"
 
-      - name: Install
-        run: pip3 install -r requirements.txt
-
-      - name: Process
-        run: python -u subscribe/process.py --overwrite
-
-      # 👇 目录检查+兜底创建，确保路径正确
-      - name: Check & Create Output Dir
+      - name: Install dependencies
         run: |
-          echo "=== 检查subscribe/output目录 ==="
-          ls -la subscribe/
-          ls -la subscribe/output/ 2>/dev/null || echo "output目录不存在，自动创建"
-          mkdir -p subscribe/output/
-          echo "================================"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # 补全所有缺失依赖，彻底解决导入错误
+          pip install requests aiohttp beautifulsoup4 lxml pyyaml pycryptodome
 
-      # 👇 无条件上传，100%语法正确，绝对不报错
-      - name: Upload Subscription Result
+      - name: Run process.py (完整日志输出)
+        run: |
+          echo "=== 进入subscribe目录，执行主程序 ==="
+          cd subscribe
+          echo "当前目录: $(pwd)"
+          echo "目录文件: $(ls -la)"
+          python -u process.py --overwrite 2>&1
+          echo "=== 程序执行结束，检查输出目录 ==="
+          ls -la output/ || echo "output目录不存在，自动创建"
+          mkdir -p output/
+
+      - name: Upload subscription files
         uses: actions/upload-artifact@v4
         with:
           name: aggregator-subscriptions
-          path: subscribe/output/
+          path: subscribe/output/**
+          retention-days: 30
 
-      - name: Timestamp
+      - name: Print timestamp
         run: date
