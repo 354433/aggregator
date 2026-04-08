@@ -2,20 +2,52 @@
     "output": "./output",
     "crawl": {
         "enable": true,
-        "exclude": "付费|机场|收费|过期|无效",
-        "threshold": 5,
+        "exclude": "付费|机场|收费|过期|无效|流量|剩余|专属|私人",
+        "threshold": 3,
         "singlelink": true,
+        "persist": {
+            "subs": "crawledsubs",
+            "proxies": "crawledproxies"
+        },
         "github": {
             "enable": true,
-            "pages": 2,
-            "exclude": "付费|收费|机场|私人"
+            "pages": 3,
+            "exclude": "付费|收费|机场|私人|专属",
+            "spams": []
         },
-        "telegram": {"enable": false},
-        "twitter": {"enable": false},
-        "pages": [{"enable": false}],
-        "repositories": [{"enable": false}]
+        "telegram": {
+            "enable": false
+        },
+        "twitter": {
+            "enable": false
+        },
+        "pages": [
+            {
+                "enable": false
+            }
+        ],
+        "repositories": [
+            {
+                "enable": false
+            }
+        ]
     },
-    "filter": {"enable": true, "speed": 5000},
-    "rename": {"enable": true},
-    "liveness": {"enable": true}
+    "filter": {
+        "enable": true,
+        "speed": 5000,
+        "max_fails": 3,
+        "exclude": "traffic|expire|剩余|过期|付费|无效"
+    },
+    "rename": {
+        "enable": true,
+        "emoji": true,
+        "template": "{country} {emoji} {name}"
+    },
+    "liveness": {
+        "enable": true,
+        "concurrency": 10,
+        "timeout": 5000,
+        "url": "http://www.gstatic.com/generate_204",
+        "interval": 3600
+    }
 }
