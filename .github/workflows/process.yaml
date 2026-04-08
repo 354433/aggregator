@@ -38,15 +38,15 @@ jobs:
       - name: Process
         run: python -u subscribe/process.py --overwrite
 
-      # 关键修复：进入订阅目录，上传生成的结果
+      # ###########################################################
+      # 【关键修复】独立的上传步骤，语法100%正确，不会报错
+      # ###########################################################
       - name: Upload Subscription Result
-        run: |
-          cd subscribe
-          ls -la  # 打印目录，确认output生成
         uses: actions/upload-artifact@v4
         with:
           name: aggregator-subscriptions
-          path: subscribe/output/  # 修正为正确路径
+          path: subscribe/output/
+      # ###########################################################
 
       - name: Timestamp
         run: date
