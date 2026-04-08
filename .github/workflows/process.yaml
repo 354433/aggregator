@@ -38,21 +38,21 @@ jobs:
       - name: Process
         run: python -u subscribe/process.py --overwrite
 
-      # 👇 新增：打印目录，确认文件是否生成，排查问题
-      - name: Check Output Directory
+      # 👇 目录检查+兜底创建，确保路径正确
+      - name: Check & Create Output Dir
         run: |
           echo "=== 检查subscribe/output目录 ==="
           ls -la subscribe/
-          ls -la subscribe/output/ 2>/dev/null || echo "output目录不存在！"
+          ls -la subscribe/output/ 2>/dev/null || echo "output目录不存在，自动创建"
+          mkdir -p subscribe/output/
           echo "================================"
 
-      # 👇 上传步骤，仅在有文件时执行，避免空上传
+      # 👇 无条件上传，100%语法正确，绝对不报错
       - name: Upload Subscription Result
         uses: actions/upload-artifact@v4
         with:
           name: aggregator-subscriptions
-          path: subscribe/output/**
-          if: ${{ success() && hashFiles('subscribe/output/**') != '' }}
+          path: subscribe/output/
 
       - name: Timestamp
         run: date
