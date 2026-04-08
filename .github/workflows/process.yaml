@@ -6,28 +6,13 @@ on:
   workflow_dispatch:
 
 env:
-  # time zone
   TZ: Asia/Shanghai
-
-  # network proxy aggregate config
   SUBSCRIBE_CONF: ${{ secrets.SUBSCRIBE_CONF }}
-
-  # token
   PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
-
-  # network reachable
   REACHABLE: ${{ vars.REACHABLE }}
-
-  # not check connective
   SKIP_ALIVE_CHECK: ${{ vars.SKIP_ALIVE_CHECK }}
-
-  # skip remark
   SKIP_REMARK: ${{ vars.SKIP_REMARK }}
-
-  # workflow mode
   WORKFLOW_MODE: ${{ vars.WORKFLOW_MODE }}
-
-  # include spwcial protocols, such vless hysteria2 and hysteria
   ENABLE_SPECIAL_PROTOCOLS: ${{ vars.ENABLE_SPECIAL_PROTOCOLS }}
 
 jobs:
@@ -52,12 +37,16 @@ jobs:
 
       - name: Process
         run: python -u subscribe/process.py --overwrite
-        
+
+      # 关键修复：进入订阅目录，上传生成的结果
       - name: Upload Subscription Result
+        run: |
+          cd subscribe
+          ls -la  # 打印目录，确认output生成
         uses: actions/upload-artifact@v4
         with:
           name: aggregator-subscriptions
-          path: output/
+          path: subscribe/output/  # 修正为正确路径
 
       - name: Timestamp
         run: date
